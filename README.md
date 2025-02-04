@@ -95,5 +95,3 @@ This project is licensed under the [MIT License](LICENSE).
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 - [Requests Library](https://pypi.org/project/requests/)
 ```
-
-Now you have an inline `README.md` file ready for download.
