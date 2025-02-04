@@ -1,6 +1,4 @@
-Below is the complete inline content for a `README.md` file. Simply copy the text (including the triple backticks) and save it as `README.md` in your project directory.
 
-```markdown
 # strava-segment-elevation
 
 A Python script to retrieve elevation and distance data for a specific Strava segment using the Strava API and export the resulting elevation profile as a CSV file.
