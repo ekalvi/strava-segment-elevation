@@ -1,6 +1,7 @@
 import os
 import csv
 import requests
+import argparse
 from dotenv import load_dotenv
 
 # Load environment variables from a .env file if present.
@@ -9,7 +10,7 @@ load_dotenv()
 
 def get_segment_elevation(segment_id, access_token):
     """
-    Retrieve the altitude and distance streams for the given segment.
+    Retrieve the altitude and distance streams for the given Strava segment.
 
     Parameters:
         segment_id (str): The ID of the Strava segment.
@@ -50,13 +51,14 @@ def get_segment_elevation(segment_id, access_token):
     return distance_data, altitude_data
 
 
-def write_elevation_csv(distance, altitude, output_filename):
+def write_elevation_csv(distance, altitude, segment_id, output_filename):
     """
     Write the elevation profile to a CSV file.
 
     Parameters:
         distance (list): List of distance values.
         altitude (list): List of altitude values.
+        segment_id (str): The Strava segment ID.
         output_filename (str): Name of the CSV file to write.
     """
     # Ensure the lists are of the same length.
@@ -72,23 +74,26 @@ def write_elevation_csv(distance, altitude, output_filename):
         for d, a in zip(distance, altitude):
             writer.writerow([d, a])
 
-    print(f"Elevation profile saved to {output_filename}")
+    print(f"Elevation profile for segment {segment_id} saved to {output_filename}")
 
 
 if __name__ == "__main__":
-    # The segment ID for which you want to retrieve elevation data.
-    SEGMENT_ID = "30408380"
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Fetch Strava segment elevation profile and save as CSV.")
+    parser.add_argument("segment_id", help="Strava segment ID to fetch elevation data for.")
+    parser.add_argument("-o", "--output", help="Output CSV file name", default="elevation_profile.csv")
 
-    # Retrieve your Strava access token from an environment variable.
+    args = parser.parse_args()
+
+    # Retrieve Strava access token
     ACCESS_TOKEN = os.getenv("STRAVA_ACCESS_TOKEN")
     if not ACCESS_TOKEN:
         print("Please set the STRAVA_ACCESS_TOKEN environment variable.")
         exit(1)
 
-    distance, altitude = get_segment_elevation(SEGMENT_ID, ACCESS_TOKEN)
+    distance, altitude = get_segment_elevation(args.segment_id, ACCESS_TOKEN)
 
     if distance and altitude:
-        output_csv = "elevation_profile.csv"
-        write_elevation_csv(distance, altitude, output_csv)
+        write_elevation_csv(distance, altitude, args.segment_id, args.output)
     else:
         print("Failed to retrieve elevation data.")
